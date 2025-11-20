@@ -2,23 +2,16 @@ package com.nickawrist.minecraftdevserver.backend.apis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.nickawrist.minecraftdevserver.backend.models.PaperApiException;
 import com.nickawrist.minecraftdevserver.backend.models.PaperBuild;
 import com.nickawrist.minecraftdevserver.backend.models.PaperBuildsResponse;
 import com.nickawrist.minecraftdevserver.backend.models.PaperVersions;
-import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class PaperApi {
 

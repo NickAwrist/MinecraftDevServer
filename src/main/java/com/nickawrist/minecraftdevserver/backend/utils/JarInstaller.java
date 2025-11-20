@@ -1,10 +1,10 @@
 package com.nickawrist.minecraftdevserver.backend.utils;
 
 import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.nickawrist.minecraftdevserver.backend.apis.PaperApi;
 import com.nickawrist.minecraftdevserver.backend.models.PaperBuild;
-import com.intellij.openapi.diagnostic.Logger;
 import com.nickawrist.minecraftdevserver.constants.PluginConstants;
 import org.apache.commons.io.FileUtils;
 
@@ -34,6 +34,7 @@ public class JarInstaller {
             }
         }
         LocalFileSystem.getInstance().refreshAndFindFileByIoFile(newDirectory.toFile());
+        LOG.info("Created directory: " + newDirectory);
         return newDirectory;
     }
 
@@ -46,6 +47,7 @@ public class JarInstaller {
         filename = filename.replace(".", "-");
         filename = filename.replace("-jar", ".jar");
 
+        LOG.info("Downloading " + downloadURL + " to " + targetDirectory.resolve(filename).toFile());
         try(InputStream is = new URI(downloadURL).toURL().openStream()){
             FileUtils.copyInputStreamToFile(is, targetDirectory.resolve(filename).toFile());
         } catch (IOException | URISyntaxException e) {
@@ -54,6 +56,7 @@ public class JarInstaller {
         }
 
         LocalFileSystem.getInstance().refreshAndFindFileByIoFile(targetDirectory.toFile());
+        LOG.info("Successfully downloaded Paper server jar from: " + downloadURL);
     }
 
 }

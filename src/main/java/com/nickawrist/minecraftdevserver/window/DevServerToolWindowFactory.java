@@ -8,7 +8,7 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.util.ui.JBUI;
 import com.nickawrist.minecraftdevserver.ServerRepository;
-import com.nickawrist.minecraftdevserver.dialogs.DevServerFormDialogue;
+import com.nickawrist.minecraftdevserver.dialogs.newServerDialog.DevServerFormDialogue;
 import com.nickawrist.minecraftdevserver.models.ServerInstance;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
