@@ -5,11 +5,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.util.ui.JBUI;
-import com.nickawrist.minecraftdevserver.backend.apis.DownloadPaperServer;
-import com.nickawrist.minecraftdevserver.backend.apis.PaperVersionsBackend;
-import com.nickawrist.minecraftdevserver.backend.apis.PaperBuildsBackend;
+import com.nickawrist.minecraftdevserver.backend.apis.PaperApi;
 import com.nickawrist.minecraftdevserver.backend.models.PaperVersions;
 import com.nickawrist.minecraftdevserver.backend.models.PaperBuild;
+import com.nickawrist.minecraftdevserver.backend.utils.JarInstaller;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -103,7 +102,7 @@ public class DevServerFormDialogue extends DialogWrapper {
     private void loadVersionsAsync() {
         SwingUtilities.invokeLater(() -> {
             try {
-                PaperVersions paperVersions = PaperVersionsBackend.getPaperVersions();
+                PaperVersions paperVersions = PaperApi.getPaperVersions();
                 String[] versions = paperVersions.versions();
 
                 serverVersionComboBox.removeAllItems();
@@ -129,7 +128,7 @@ public class DevServerFormDialogue extends DialogWrapper {
 
         SwingUtilities.invokeLater(() -> {
             try {
-                PaperBuild[] builds = PaperBuildsBackend.getPaperBuilds(version);
+                PaperBuild[] builds = PaperApi.getPaperBuilds(version);
                 currentBuilds = builds; // Store builds for later use
 
                 serverBuildComboBox.removeAllItems();
@@ -223,7 +222,7 @@ public class DevServerFormDialogue extends DialogWrapper {
         new Thread(() -> {
             try {
                 LOG.info("Downloading Paper server '" + serverName + "' version " + selectedVersion + " build " + buildNumber + " to " + projectBasePath);
-                DownloadPaperServer.downloadPaperServer(serverName, finalSelectedBuild, selectedVersion, projectBasePath);
+                JarInstaller.downloadPaperServer(serverName, finalSelectedBuild, selectedVersion);
                 LOG.info("Successfully downloaded Paper server to " + projectBasePath + "/" + serverName);
             } catch (Exception e) {
                 LOG.error("Failed to download Paper server", e);
