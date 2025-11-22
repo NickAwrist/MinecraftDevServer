@@ -6,10 +6,12 @@ import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.util.ui.JBUI;
+import com.nickawrist.minecraftdevserver.ServerRepository;
 import com.nickawrist.minecraftdevserver.backend.models.PaperBuild;
 import com.nickawrist.minecraftdevserver.backend.models.ServerPropertyChanges;
 import com.nickawrist.minecraftdevserver.backend.utils.JarInstaller;
 import com.nickawrist.minecraftdevserver.backend.utils.ServerConfigurator;
+import com.nickawrist.minecraftdevserver.models.ServerInstance;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -143,6 +145,7 @@ public class DevServerFormDialogue extends DialogWrapper {
         String selectedVersion = paperVersionLabeledComponentFactory.getSelectedVersion();
         int selectedBuildNumber = getServerBuild();
         String serverName = getServerName();
+        String serverVersion = getServerVersion();
 
         // Validate inputs
         if (selectedVersion.isEmpty() || selectedBuildNumber < 0 || serverName.isEmpty()) {
@@ -158,6 +161,7 @@ public class DevServerFormDialogue extends DialogWrapper {
             return;
         }
 
+        ServerInstance newServer =  ServerRepository.createServer(serverName, serverVersion);
         // Download the server in a background thread
         new Thread(() -> {
             try {
@@ -169,6 +173,8 @@ public class DevServerFormDialogue extends DialogWrapper {
                 );
 
                 ServerConfigurator.configureServer(downloadLocation.getParent(), propertyChanges);
+                newServer.createServerRunner(downloadLocation);
+
             } catch (Exception e) {
                 LOG.error("Failed to download Paper server", e);
             }

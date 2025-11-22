@@ -2,6 +2,7 @@ package com.nickawrist.minecraftdevserver;
 
 import com.nickawrist.minecraftdevserver.models.ServerInstance;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -14,9 +15,10 @@ public class ServerRepository {
         return repo.get(uuid);
     }
 
-    public static void createServer(String serverName, String serverVersion) {
+    public static ServerInstance createServer(String serverName, String serverVersion) {
         ServerInstance serverInstance = new ServerInstance(serverName, serverVersion);
         repo.put(serverInstance.getUuid(), serverInstance);
+        return serverInstance;
     }
 
     public static List<ServerInstance> getServers() {
