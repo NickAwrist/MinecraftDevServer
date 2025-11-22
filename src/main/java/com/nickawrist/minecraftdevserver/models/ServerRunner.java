@@ -28,7 +28,7 @@ public class ServerRunner {
         this.jarPath = jarPath;
     }
 
-    public void startServer() {
+    public void startServer(ServerConsole serverConsole) {
         if (isRunning()) {
             LOG.warn("Server is already running.");
             return;
@@ -43,28 +43,11 @@ public class ServerRunner {
                 .withParameters(jarPath.getFileName().toString())
                 .withParameters("nogui");
 
+
         try {
             processHandler = new OSProcessHandler(commandLine);
 
-            processHandler.addProcessListener(new ProcessAdapter() {
-                @Override
-                public void onTextAvailable(@NotNull ProcessEvent event,@NotNull Key outputType) {
-                    String text = event.getText().trim();
-                    if (text.isEmpty()) return;
-
-                    if (outputType == ProcessOutputTypes.STDERR) {
-                        LOG.warn("[Server ERR] " + text);
-                    } else {
-                        LOG.info("[Server OUT] " + text);
-                    }
-                }
-
-                @Override
-                public void processTerminated(@NotNull ProcessEvent event) {
-                    LOG.info("Server process terminated with exit code " + event.getExitCode());
-                    processHandler = null;
-                }
-            });
+            serverConsole.getConsoleView().attachToProcess(processHandler);
 
             processHandler.startNotify();
 

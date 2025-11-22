@@ -1,5 +1,6 @@
 package com.nickawrist.minecraftdevserver.models;
 
+import javax.swing.*;
 import java.nio.file.Path;
 import java.util.UUID;
 
@@ -10,6 +11,9 @@ public class ServerInstance {
     private String serverVersion;
 
     private ServerRunner serverRunner;
+
+    ServerConsole serverConsole;
+
 
     public ServerInstance(String serverName, String serverVersion) {
         this.uuid = UUID.randomUUID();
@@ -27,6 +31,10 @@ public class ServerInstance {
     public UUID getUuid() {
         return uuid;
     }
+    public JComponent getServerConsoleComponent() {
+        if (serverConsole == null) { return null;}
+        return serverConsole.getComponent();
+    }
 
     public void setServerName(String serverName) {
         this.serverName = serverName;
@@ -36,6 +44,7 @@ public class ServerInstance {
     }
     public void createServerRunner(Path jarDir) {
         this.serverRunner = new ServerRunner(jarDir.getParent(), jarDir);
+        this.serverConsole = new ServerConsole();
     }
 
     public boolean hasServerRunner() {
@@ -44,7 +53,7 @@ public class ServerInstance {
 
     public void startServer() {
         if (serverRunner == null) { return;}
-        serverRunner.startServer();
+        serverRunner.startServer(serverConsole);
     }
     public void stopServer() {
         if (serverRunner == null) { return;}

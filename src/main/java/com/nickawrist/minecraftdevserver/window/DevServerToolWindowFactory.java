@@ -8,8 +8,10 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.util.ui.JBUI;
 import com.nickawrist.minecraftdevserver.ServerRepository;
+import com.nickawrist.minecraftdevserver.constants.PluginConstants;
 import com.nickawrist.minecraftdevserver.dialogs.newServerDialog.DevServerFormDialogue;
 import com.nickawrist.minecraftdevserver.models.ServerInstance;
+import com.nickawrist.minecraftdevserver.window.ServerInfoView.ServerInfoViewFactory;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
@@ -19,7 +21,6 @@ import javax.swing.Timer;
 import java.awt.*;
 import java.util.ArrayList;
 import com.intellij.ui.AnimatedIcon;
-import com.intellij.ui.JBColor;
 
 public class DevServerToolWindowFactory implements ToolWindowFactory {
 
@@ -27,9 +28,12 @@ public class DevServerToolWindowFactory implements ToolWindowFactory {
     private JPanel headerPanel;
     private JButton createServerButton;
     private Timer runnerReadyTimer;
+    private final ServerInfoViewFactory serverInfoViewFactory = new ServerInfoViewFactory();
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        PluginConstants.project = project;
+
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         // Header panel with title and optional back button
@@ -111,7 +115,7 @@ public class DevServerToolWindowFactory implements ToolWindowFactory {
                 buttonConstraints.fill = GridBagConstraints.HORIZONTAL;
                 rowPanel.add(serverButton, buttonConstraints);
 
-                JComponent loadingIndicator = null;
+                JComponent loadingIndicator;
                 if (!server.hasServerRunner()) {
                     serverButton.setEnabled(false);
                     loadingIndicator = createLoadingIndicator();
@@ -170,98 +174,9 @@ public class DevServerToolWindowFactory implements ToolWindowFactory {
         }
         headerPanel.add(backButton, BorderLayout.EAST);
 
-        // Create info panel
-        JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-        infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        JLabel nameLabel = new JLabel("Server Name: " + server.getServerName());
-        nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD, 14f));
-        nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        JLabel versionLabel = new JLabel("Version: " + server.getServerVersion());
-        versionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        JLabel uuidLabel = new JLabel("UUID: " + server.getUuid().toString());
-        uuidLabel.setFont(uuidLabel.getFont().deriveFont(11f));
-        uuidLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        infoPanel.add(nameLabel);
-        infoPanel.add(Box.createRigidArea(new Dimension(0, 8)));
-        infoPanel.add(versionLabel);
-        infoPanel.add(Box.createRigidArea(new Dimension(0, 8)));
-        infoPanel.add(uuidLabel);
-
-        infoPanel.add(Box.createRigidArea(new Dimension(0, 12)));
-
-        // Status label
-        JLabel statusLabel = new JLabel();
-        statusLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        statusLabel.setFont(statusLabel.getFont().deriveFont(Font.BOLD, 12f));
-
-        // Control button (start / stop)
-        JButton controlButton = new JButton();
-        controlButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        controlButton.setFocusPainted(false);
-        controlButton.setBorderPainted(true);
-        controlButton.setOpaque(true);
-        controlButton.setForeground(new JBColor(new Color(0xFFFFFF), new Color(0xFFFFFF)));
-
-        // helper to refresh status and button appearance on the EDT
-        Runnable refreshStatus = () -> {
-            boolean running = server.isServerRunning();
-            statusLabel.setText("Status: " + (running ? "Running" : "Stopped"));
-            if (running) {
-                controlButton.setText("Stop Server");
-                controlButton.setBackground(new JBColor(new Color(0xF44336), new Color(0xF44336))); // red
-            } else {
-                controlButton.setText("Start Server");
-                controlButton.setBackground(new JBColor(new Color(0x4CAF50), new Color(0x4CAF50))); // green
-            }
-            controlButton.setEnabled(true);
-        };
-
-        // initialize appearance
-        refreshStatus.run();
-
-        // action - run start/stop off the EDT and update UI when done
-        controlButton.addActionListener(e -> {
-            controlButton.setEnabled(false);
-            statusLabel.setText("Status: Updating...");
-
-            new Thread(() -> {
-                try {
-                    if (server.isServerRunning()) {
-                        server.stopServer();
-                    } else {
-                        server.startServer();
-                    }
-                } catch (Exception ex) {
-                    // If an exception occurs, reflect it in status label
-                    SwingUtilities.invokeLater(() -> {
-                        statusLabel.setText("Status: Error - " + ex.getMessage());
-                        controlButton.setEnabled(true);
-                    });
-                    return;
-                }
-
-                // After operation, update UI based on current running state
-                SwingUtilities.invokeLater(refreshStatus);
-            }).start();
-        });
-
-        // Layout for status + control
-        JPanel controlRow = new JPanel();
-        controlRow.setLayout(new BoxLayout(controlRow, BoxLayout.X_AXIS));
-        controlRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-        controlRow.setOpaque(false);
-        controlRow.add(statusLabel);
-        controlRow.add(Box.createRigidArea(new Dimension(8, 0)));
-        controlRow.add(controlButton);
-
-        infoPanel.add(controlRow);
-
-        contentPanel.add(infoPanel, BorderLayout.CENTER);
+        // Create and show the server info view using the factory
+        JComponent serverInfoView = serverInfoViewFactory.createServerInfoPanel(server);
+        contentPanel.add(serverInfoView, BorderLayout.CENTER);
 
         // Hide create button in info view
         createServerButton.setVisible(false);
@@ -324,15 +239,6 @@ public class DevServerToolWindowFactory implements ToolWindowFactory {
         }
     }
 
-    private static class ServerListEntry {
-        private final ServerInstance server;
-        private final JButton button;
-        private final JComponent loadingIndicator;
-
-        private ServerListEntry(ServerInstance server, JButton button, JComponent loadingIndicator) {
-            this.server = server;
-            this.button = button;
-            this.loadingIndicator = loadingIndicator;
-        }
+    private record ServerListEntry(ServerInstance server, JButton button, JComponent loadingIndicator) {
     }
 }
