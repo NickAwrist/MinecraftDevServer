@@ -1,17 +1,11 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
     <id>com.nickawrist.MinecraftDevServer</id>
 
-    <!-- Public plugin name should be written in Title Case.
-         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
     <name>MinecraftDevServer</name>
 
-    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor url="https://www.nicholas-aristizabal.com">Nicholas Aristizabal</vendor>
 
-    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
-         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
     Allows Minecraft plugin developers to spin up a lightweight Minecraft server inside their IDE for testing and debugging purposes.
   ]]></description>
@@ -29,12 +23,10 @@
     <actions>
         <group id="MinecraftDevServer.MoveToDevServerGroup"
                class="com.nickawrist.minecraftdevserver.actions.MoveToDevServerGroup"
-               text="Move to Development Server"
-               description="Copy this jar to a server plugins folder"
                popup="true">
-
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
         </group>
     </actions>
+    <resource-bundle>templates.server</resource-bundle>
 
 </idea-plugin>
