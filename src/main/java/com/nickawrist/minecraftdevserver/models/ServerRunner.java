@@ -6,7 +6,9 @@ import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessOutputTypes;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.externalSystem.util.ExternalSystemUtil;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.SystemInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
@@ -50,7 +52,6 @@ public class ServerRunner {
             serverConsole.getConsoleView().attachToProcess(processHandler);
 
             processHandler.startNotify();
-
             LOG.info("Server started successfully.");
         } catch (Exception e) {
             LOG.error("Failed to start server.", e);
@@ -76,6 +77,10 @@ public class ServerRunner {
 
     public boolean isRunning(){
         return processHandler != null && !processHandler.isProcessTerminated();
+    }
+
+    public Path getServerDir() {
+        return serverDir;
     }
 
 }

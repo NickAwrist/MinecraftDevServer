@@ -1,10 +1,14 @@
 package com.nickawrist.minecraftdevserver.window.ServerInfoView;
 
+import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.JBColor;
 import com.nickawrist.minecraftdevserver.models.ServerInstance;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Desktop;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class ServerInfoViewFactory {
 
@@ -98,6 +102,19 @@ public class ServerInfoViewFactory {
 
         infoPanel.add(controlRow);
 
+        JButton openServerFolderButton = new JButton("Open Server Folder");
+        openServerFolderButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        openServerFolderButton.addActionListener(e -> openServerFolder(server));
+
+        JButton openPluginsFolderButton = new JButton("Open Plugins Folder");
+        openPluginsFolderButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        openPluginsFolderButton.addActionListener(e -> openPluginsFolder(server));
+
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 8)));
+        infoPanel.add(openServerFolderButton);
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 4)));
+        infoPanel.add(openPluginsFolderButton);
+
         JComponent consoleComponent = server.getServerConsoleComponent();
         if (consoleComponent != null) {
             infoPanel.add(Box.createRigidArea(new Dimension(0, 12)));
@@ -106,6 +123,44 @@ public class ServerInfoViewFactory {
         }
 
         return infoPanel;
+    }
+
+    private static void openServerFolder(ServerInstance server) {
+        Path serverDir = server.getServerDirPath();
+        if (serverDir == null) {
+            Messages.showWarningDialog("Server directory is not available yet.", "Cannot Open Server Folder");
+            return;
+        }
+        openDirectory(serverDir, "Server Folder");
+    }
+
+    private static void openPluginsFolder(ServerInstance server) {
+        Path serverDir = server.getServerDirPath();
+        if (serverDir == null) {
+            Messages.showWarningDialog("Server directory is not available yet.", "Cannot Open Plugins Folder");
+            return;
+        }
+
+        Path pluginsDir = serverDir.resolve("plugins");
+        openDirectory(pluginsDir, "Plugins Folder");
+    }
+
+    private static void openDirectory(Path directory, String description) {
+        try {
+            if (!Files.exists(directory)) {
+                Messages.showWarningDialog(description + " (" + directory + ") does not exist yet.", "Cannot Open " + description);
+                return;
+            }
+
+            if (!Desktop.isDesktopSupported() || !Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+                Messages.showWarningDialog("Opening folders is not supported on this platform.", "Cannot Open " + description);
+                return;
+            }
+
+            Desktop.getDesktop().open(directory.toFile());
+        } catch (Exception ex) {
+            Messages.showErrorDialog("Failed to open " + description + ": " + ex.getMessage(), "Cannot Open " + description);
+        }
     }
 
     private static void waitForServerState(ServerInstance server, boolean shouldBeRunning) {

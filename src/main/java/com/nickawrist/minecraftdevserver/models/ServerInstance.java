@@ -35,12 +35,13 @@ public class ServerInstance {
         if (serverConsole == null) { return null;}
         return serverConsole.getComponent();
     }
+    public Path getServerDirPath() {
+        if (serverRunner == null) { return null;}
+        return serverRunner.getServerDir();
+    }
 
     public void setServerName(String serverName) {
         this.serverName = serverName;
-    }
-    public void setServerVersion(String serverVersion) {
-        this.serverVersion = serverVersion;
     }
     public void createServerRunner(Path jarDir) {
         this.serverRunner = new ServerRunner(jarDir.getParent(), jarDir);

@@ -24,11 +24,13 @@ public class JarInstaller {
         String destination = PathManager.getSystemPath();
         Path destinationPath = Paths.get(destination, PluginConstants.PLUGIN_ID);
         Path newDirectory = destinationPath.resolve(serverName);
+        Path pluginsDirectory = newDirectory.resolve("plugins");
 
         LOG.info("Creating directory: " + newDirectory);
         if (!Files.exists(newDirectory)) {
             try {
                 Files.createDirectories(newDirectory);
+                Files.createDirectories(pluginsDirectory);
             } catch (IOException e) {
                 LOG.error("Failed to create directory: " + newDirectory, e);
             }
