@@ -38,7 +38,7 @@ public class JarInstaller {
         return newDirectory;
     }
 
-    public static void downloadPaperServer(String serverName, PaperBuild build, String version) {
+    public static Path downloadPaperServer(String serverName, PaperBuild build, String version) {
         String downloadURL = PaperApi.getDownloadUrl(build, version);
 
         Path targetDirectory = getOrCreateServerDirectory(serverName);
@@ -57,6 +57,7 @@ public class JarInstaller {
 
         LocalFileSystem.getInstance().refreshAndFindFileByIoFile(targetDirectory.toFile());
         LOG.info("Successfully downloaded Paper server jar from: " + downloadURL);
+        return targetDirectory.resolve(filename);
     }
 
 }

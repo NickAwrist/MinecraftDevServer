@@ -7,12 +7,15 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.util.ui.JBUI;
 import com.nickawrist.minecraftdevserver.backend.models.PaperBuild;
+import com.nickawrist.minecraftdevserver.backend.models.ServerPropertyChanges;
 import com.nickawrist.minecraftdevserver.backend.utils.JarInstaller;
+import com.nickawrist.minecraftdevserver.backend.utils.ServerConfigurator;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
+import java.nio.file.Path;
 
 public class DevServerFormDialogue extends DialogWrapper {
 
@@ -158,7 +161,14 @@ public class DevServerFormDialogue extends DialogWrapper {
         // Download the server in a background thread
         new Thread(() -> {
             try {
-                JarInstaller.downloadPaperServer(serverName, selectedBuild, selectedVersion);
+                Path downloadLocation = JarInstaller.downloadPaperServer(serverName, selectedBuild, selectedVersion);
+
+                ServerPropertyChanges propertyChanges = new ServerPropertyChanges(
+                        serverName,
+                        25565
+                );
+
+                ServerConfigurator.configureServer(downloadLocation.getParent(), propertyChanges);
             } catch (Exception e) {
                 LOG.error("Failed to download Paper server", e);
             }
