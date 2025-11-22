@@ -8,13 +8,12 @@
     <name>MinecraftDevServer</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor url="https://www.yourcompany.com">YourCompany</vendor>
+    <vendor url="https://www.nicholas-aristizabal.com">Nicholas Aristizabal</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+    Allows Minecraft plugin developers to spin up a lightweight Minecraft server inside their IDE for testing and debugging purposes.
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.

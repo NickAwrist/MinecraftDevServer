@@ -16,7 +16,7 @@ public class MoveToDevServerGroup extends ActionGroup {
     }
 
     @Override
-    public AnAction @NotNull [] getChildren(@NotNull AnActionEvent e) {
+    public AnAction @NotNull [] getChildren(AnActionEvent e) {
         List<ServerInstance> servers = ServerRepository.getServers();
         AnAction[] actions = new AnAction[servers.size()];
         for (int i = 0; i < servers.size(); i++) {
