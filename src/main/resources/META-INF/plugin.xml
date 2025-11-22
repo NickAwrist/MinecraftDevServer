@@ -27,4 +27,15 @@
         <toolWindow factoryClass="com.nickawrist.minecraftdevserver.window.DevServerToolWindowFactory" id="DevServerToolWindow" anchor="right" icon="/icons/cube-svg.svg"/>
     </extensions>
 
+    <actions>
+        <group id="MinecraftDevServer.MoveToDevServerGroup"
+               class="com.nickawrist.minecraftdevserver.actions.MoveToDevServerGroup"
+               text="Move to Development Server"
+               description="Copy this jar to a server plugins folder"
+               popup="true">
+
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        </group>
+    </actions>
+
 </idea-plugin>

@@ -1,5 +1,6 @@
 package com.nickawrist.minecraftdevserver.backend.apis;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.openapi.diagnostic.Logger;
 import com.nickawrist.minecraftdevserver.backend.models.PaperApiException;
@@ -62,7 +63,7 @@ public class PaperApi {
                logAndThrow("Failed to fetch Paper builds: " + response.statusCode());
             }
 
-            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             PaperBuildsResponse buildsResponse = objectMapper.readValue(response.body(), PaperBuildsResponse.class);
             return buildsResponse.builds();
         } catch (IOException | InterruptedException e) {
