@@ -23,7 +23,6 @@ public class ServerInstance {
 
     private final List<ServerStateListener> stateListeners = new CopyOnWriteArrayList<>();
 
-
     public ServerInstance(String serverName, String serverVersion) {
         this.uuid = UUID.randomUUID();
         this.serverName = serverName;
@@ -54,10 +53,7 @@ public class ServerInstance {
         if (serverRunner == null) { return null;}
         return serverRunner.getServerDir();
     }
-
-    public void setServerName(String serverName) {
-        this.serverName = serverName;
-    }
+    
     public void createServerRunner(Path jarDir) {
         this.jarPath = jarDir;
         this.serverRunner = new ServerRunner(jarDir.getParent(), jarDir);
@@ -75,10 +71,6 @@ public class ServerInstance {
 
     public void addServerStateListener(ServerStateListener listener) {
         stateListeners.add(listener);
-    }
-
-    public void removeServerStateListener(ServerStateListener listener) {
-        stateListeners.remove(listener);
     }
 
     private void notifyServerStateChanged(boolean isRunning) {

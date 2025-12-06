@@ -108,10 +108,6 @@ public final class ServerRepository implements PersistentStateComponent<ServerRe
         }
     }
 
-    public ServerInstance getServer(UUID uuid) {
-        return repo.get(uuid);
-    }
-
     public ServerInstance createServer(String serverName, String serverVersion) {
         ServerInstance serverInstance = new ServerInstance(serverName, serverVersion);
         repo.put(serverInstance.getUuid(), serverInstance);

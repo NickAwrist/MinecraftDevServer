@@ -4,7 +4,6 @@ import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.nickawrist.minecraftdevserver.backend.apis.PaperApi;
 import com.nickawrist.minecraftdevserver.backend.models.PaperBuild;
-import com.nickawrist.minecraftdevserver.constants.PluginConstants;
 import com.nickawrist.minecraftdevserver.dialogs.messageDialog.MessageDialogFactory;
 
 import javax.swing.SwingUtilities;

@@ -64,9 +64,7 @@ public class ServerInfoViewFactory {
         Runnable refreshStatus = getRunnable(server, statusLabel, controlButton);
 
         // Register listener to update UI when server state changes (e.g., via command)
-        server.addServerStateListener(isRunning -> {
-            SwingUtilities.invokeLater(refreshStatus);
-        });
+        server.addServerStateListener(isRunning -> SwingUtilities.invokeLater(refreshStatus));
 
         controlButton.addActionListener(e -> {
             controlButton.setEnabled(false);
