@@ -57,7 +57,7 @@ public class DevServerFormDialogue extends DialogWrapper {
         mainPanel.add(serverNameField, gbc);
 
         paperVersionLabeledComponentFactory = new PaperVersionLabeledComponentFactory();
-        LabeledComponent<ComboBox<String>> paperVersionLabeledComponent = paperVersionLabeledComponentFactory.create();
+        LabeledComponent<JPanel> paperVersionLabeledComponent = paperVersionLabeledComponentFactory.create();
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
@@ -75,7 +75,7 @@ public class DevServerFormDialogue extends DialogWrapper {
         gbc.gridwidth = 1;
 
         // Add listener to version combo box
-        paperVersionLabeledComponent.getComponent().addItemListener(e -> {
+        paperVersionLabeledComponentFactory.getVersionComboBox().addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 String selectedVersion = paperVersionLabeledComponentFactory.getSelectedVersion();
                 if (selectedVersion != null && !selectedVersion.isEmpty()) {

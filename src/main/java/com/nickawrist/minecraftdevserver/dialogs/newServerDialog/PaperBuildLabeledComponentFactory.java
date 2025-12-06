@@ -48,6 +48,7 @@ public class PaperBuildLabeledComponentFactory {
                 PaperBuild[] builds = PaperApi.getPaperBuilds(version);
                 if(builds == null || builds.length == 0) {
                     // TODO: Add a popup notification
+                    labeledComponent.setVisible(false);
                     return;
                 }
                 buildHashMap = new HashMap<>();

@@ -13,6 +13,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 
 public class PaperApi {
 
@@ -30,7 +31,7 @@ public class PaperApi {
      * @return A PaperVersions object containing available versions.
      * @throws PaperApiException If the http request fails or parsing fails.
      */
-    public static PaperVersions getPaperVersions() throws PaperApiException {
+    public static PaperVersions getPaperVersions(boolean includePrereleases) throws PaperApiException {
         HttpRequest request = buildHttpGetRequest(BASE_URL);
 
         try {
@@ -40,7 +41,20 @@ public class PaperApi {
             }
 
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(response.body(), PaperVersions.class);
+            PaperVersions paperVersions = objectMapper.readValue(response.body(), PaperVersions.class);
+
+            String[] filteredVersions = Arrays.stream(paperVersions.versions())
+                    .filter(version -> !version.contains("-rc"))
+                    .toArray(String[]::new);
+
+            if(!includePrereleases) {
+                filteredVersions = Arrays.stream(filteredVersions)
+                        .filter(version -> !version.contains("-pre"))
+                        .toArray(String[]::new);
+            }
+
+            return new PaperVersions(paperVersions.project_id(), paperVersions.project_name(),
+                    paperVersions.version_groups(), filteredVersions);
         } catch (IOException | InterruptedException e) {
             logAndThrow("Failed to fetch Paper versions: " + e.getMessage());
             return null;
