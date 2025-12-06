@@ -2,14 +2,7 @@ package com.nickawrist.minecraftdevserver.models;
 
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.OSProcessHandler;
-import com.intellij.execution.process.ProcessAdapter;
-import com.intellij.execution.process.ProcessEvent;
-import com.intellij.execution.process.ProcessOutputTypes;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.externalSystem.util.ExternalSystemUtil;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.SystemInfo;
-import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -18,8 +11,8 @@ public class ServerRunner {
 
     private static final Logger LOG = Logger.getInstance(ServerRunner.class);
 
-    private Path serverDir;
-    private Path jarPath;
+    private final Path serverDir;
+    private final Path jarPath;
 
     private int allocatedMemoryMB = 1024;
 

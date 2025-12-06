@@ -7,8 +7,13 @@ import com.intellij.openapi.application.ModalityState;
 import com.intellij.ui.JBColor;
 import com.nickawrist.minecraftdevserver.constants.PluginConstants;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import java.awt.BorderLayout;
 import java.util.function.Consumer;
 
 public class ServerConsole {
@@ -46,7 +51,6 @@ public class ServerConsole {
         commandInput.setBackground(JBColor.background());
         commandInput.setForeground(JBColor.foreground());
 
-        // Send command on Enter key
         commandInput.addActionListener(e -> sendCommand());
 
         JButton sendButton = new JButton("Send");

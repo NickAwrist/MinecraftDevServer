@@ -15,8 +15,13 @@ import com.nickawrist.minecraftdevserver.dialogs.messageDialog.MessageDialogFact
 import com.nickawrist.minecraftdevserver.models.ServerInstance;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
 import java.nio.file.Path;
 
@@ -183,7 +188,6 @@ public class DevServerFormDialogue extends DialogWrapper {
                 // Show error dialog on EDT
                 SwingUtilities.invokeLater(() -> {
                     MessageDialogFactory errorDialog = new MessageDialogFactory(
-                            null,
                             "Failed to create server: " + e.getMessage()
                     );
                     errorDialog.show();

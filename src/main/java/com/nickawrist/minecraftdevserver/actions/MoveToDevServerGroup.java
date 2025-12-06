@@ -1,6 +1,10 @@
 package com.nickawrist.minecraftdevserver.actions;
 
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.ActionGroup;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.nickawrist.minecraftdevserver.ServerRepository;
 import com.nickawrist.minecraftdevserver.models.ServerInstance;

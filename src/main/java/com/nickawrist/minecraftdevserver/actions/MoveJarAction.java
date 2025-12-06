@@ -3,6 +3,7 @@ package com.nickawrist.minecraftdevserver.actions;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.nickawrist.minecraftdevserver.dialogs.messageDialog.MessageDialogFactory;
 import com.nickawrist.minecraftdevserver.models.ServerInstance;
@@ -10,7 +11,6 @@ import com.nickawrist.minecraftdevserver.models.ServerInstance;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import com.intellij.openapi.diagnostic.Logger;
 
 public class MoveJarAction extends AnAction {
 
@@ -44,8 +44,9 @@ public class MoveJarAction extends AnAction {
 
             Files.copy(sourceFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             LOG.info("Successfully moved jar file to plugins directory");
-            new MessageDialogFactory(e.getProject(), "Successfully moved jar file to plugins directory").show();
+            new MessageDialogFactory( "Successfully moved jar file to plugins directory").show();
         } catch (Exception ex) {
+            new MessageDialogFactory("Failed to move jar file to plugins directory: " + ex.getMessage()).show();
             throw new RuntimeException("Failed to move jar file to plugins directory", ex);
         }
     }

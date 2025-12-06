@@ -5,8 +5,11 @@ import com.intellij.openapi.ui.LabeledComponent;
 import com.nickawrist.minecraftdevserver.backend.apis.PaperApi;
 import com.nickawrist.minecraftdevserver.backend.models.PaperVersions;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import java.awt.BorderLayout;
+
 
 public class PaperVersionLabeledComponentFactory {
 

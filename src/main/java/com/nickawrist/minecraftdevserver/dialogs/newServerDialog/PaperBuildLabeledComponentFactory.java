@@ -4,8 +4,10 @@ import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.nickawrist.minecraftdevserver.backend.apis.PaperApi;
 import com.nickawrist.minecraftdevserver.backend.models.PaperBuild;
+import com.nickawrist.minecraftdevserver.constants.PluginConstants;
+import com.nickawrist.minecraftdevserver.dialogs.messageDialog.MessageDialogFactory;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -47,7 +49,8 @@ public class PaperBuildLabeledComponentFactory {
             try {
                 PaperBuild[] builds = PaperApi.getPaperBuilds(version);
                 if(builds == null || builds.length == 0) {
-                    // TODO: Add a popup notification
+                    new MessageDialogFactory("Unable to fetch Paper version builds").show();
+
                     labeledComponent.setVisible(false);
                     return;
                 }

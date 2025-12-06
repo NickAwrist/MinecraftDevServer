@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.ui.AnimatedIcon;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
@@ -14,14 +15,27 @@ import com.nickawrist.minecraftdevserver.dialogs.newServerDialog.DevServerFormDi
 import com.nickawrist.minecraftdevserver.models.ServerInstance;
 import com.nickawrist.minecraftdevserver.window.ServerInfoView.ServerInfoViewFactory;
 import org.jetbrains.annotations.NotNull;
-import java.util.List;
 
-
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.ArrayList;
-import com.intellij.ui.AnimatedIcon;
+import java.util.List;
 
 public class DevServerToolWindowFactory implements ToolWindowFactory {
 
@@ -30,7 +44,6 @@ public class DevServerToolWindowFactory implements ToolWindowFactory {
     private JButton createServerButton;
     private Timer runnerReadyTimer;
     private final ServerInfoViewFactory serverInfoViewFactory = new ServerInfoViewFactory();
-    private ServerRepository.RepositoryChangeListener repositoryChangeListener;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -53,7 +66,7 @@ public class DevServerToolWindowFactory implements ToolWindowFactory {
         mainPanel.add(createServerButton, BorderLayout.SOUTH);
 
         // Subscribe to repository changes to auto-refresh
-        repositoryChangeListener = () -> SwingUtilities.invokeLater(this::showServerListView);
+        ServerRepository.RepositoryChangeListener repositoryChangeListener = () -> SwingUtilities.invokeLater(this::showServerListView);
         ServerRepository.getInstance().addChangeListener(repositoryChangeListener);
 
         // Initialize with server list view
@@ -171,7 +184,7 @@ public class DevServerToolWindowFactory implements ToolWindowFactory {
             contentPanel.add(emptyStateLabel, BorderLayout.CENTER);
         }
 
-        // Show create button
+        // Show the create server button
         createServerButton.setVisible(true);
 
         // Refresh the UI

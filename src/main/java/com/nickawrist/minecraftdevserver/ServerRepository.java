@@ -11,13 +11,16 @@ import com.nickawrist.minecraftdevserver.models.ServerInstance;
 import com.nickawrist.minecraftdevserver.models.ServerState;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @State(
@@ -39,10 +42,6 @@ public final class ServerRepository implements PersistentStateComponent<ServerRe
         changeListeners.add(listener);
     }
 
-    public void removeChangeListener(RepositoryChangeListener listener) {
-        changeListeners.remove(listener);
-    }
-
     private void notifyRepositoryChanged() {
         for (RepositoryChangeListener listener : changeListeners) {
             listener.onRepositoryChanged();
@@ -61,7 +60,7 @@ public final class ServerRepository implements PersistentStateComponent<ServerRe
     }
 
     @Override
-    public @Nullable State getState() {
+    public @NotNull State getState() {
         State state = new State();
         for (ServerInstance server : repo.values()) {
             String jarPathStr = server.getJarPath() != null ? server.getJarPath().toString() : null;
@@ -138,7 +137,7 @@ public final class ServerRepository implements PersistentStateComponent<ServerRe
             }
 
             // Delete the server directory if it exists
-            if (serverDir != null && Files.exists(serverDir)) {
+            if (Files.exists(serverDir)) {
                 try {
                     FileUtils.deleteDirectory(serverDir.toFile());
                     LOG.info("Deleted server directory: " + serverDir);

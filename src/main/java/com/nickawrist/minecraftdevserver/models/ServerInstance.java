@@ -1,6 +1,6 @@
 package com.nickawrist.minecraftdevserver.models;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
@@ -14,7 +14,7 @@ public class ServerInstance {
 
     private final UUID uuid;
     private String serverName;
-    private String serverVersion;
+    private final String serverVersion;
     private Path jarPath;
 
     private ServerRunner serverRunner;

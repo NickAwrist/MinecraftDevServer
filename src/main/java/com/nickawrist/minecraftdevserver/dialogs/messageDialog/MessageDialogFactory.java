@@ -1,17 +1,21 @@
 package com.nickawrist.minecraftdevserver.dialogs.messageDialog;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.nickawrist.minecraftdevserver.constants.PluginConstants;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+
 
 public class MessageDialogFactory extends DialogWrapper {
     private final String message;
 
-    public MessageDialogFactory(@Nullable Project project, String message) {
-        super(project);
+    public MessageDialogFactory(String message) {
+        super(PluginConstants.project);
         this.message = message;
         setTitle("Message");
         init();
