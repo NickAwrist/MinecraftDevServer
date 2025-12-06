@@ -84,7 +84,7 @@ public class DevServerToolWindowFactory implements ToolWindowFactory {
             }
         }
 
-        List<ServerInstance> servers = ServerRepository.getServers();
+        List<ServerInstance> servers = ServerRepository.getInstance().getServers();
         if (!servers.isEmpty()) {
             JPanel buttonListPanel = new JPanel();
             buttonListPanel.setLayout(new BoxLayout(buttonListPanel, BoxLayout.Y_AXIS));

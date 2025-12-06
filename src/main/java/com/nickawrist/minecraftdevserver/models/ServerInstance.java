@@ -9,6 +9,7 @@ public class ServerInstance {
     private final UUID uuid;
     private String serverName;
     private String serverVersion;
+    private Path jarPath;
 
     private ServerRunner serverRunner;
 
@@ -19,7 +20,13 @@ public class ServerInstance {
         this.uuid = UUID.randomUUID();
         this.serverName = serverName;
         this.serverVersion = serverVersion;
+    }
 
+    public ServerInstance(UUID uuid, String serverName, String serverVersion, Path jarPath) {
+        this.uuid = uuid;
+        this.serverName = serverName;
+        this.serverVersion = serverVersion;
+        this.jarPath = jarPath;
     }
 
     public String getServerName() {
@@ -44,8 +51,13 @@ public class ServerInstance {
         this.serverName = serverName;
     }
     public void createServerRunner(Path jarDir) {
+        this.jarPath = jarDir;
         this.serverRunner = new ServerRunner(jarDir.getParent(), jarDir);
         this.serverConsole = new ServerConsole();
+    }
+
+    public Path getJarPath() {
+        return jarPath;
     }
 
     public boolean hasServerRunner() {

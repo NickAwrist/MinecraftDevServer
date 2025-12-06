@@ -161,7 +161,7 @@ public class DevServerFormDialogue extends DialogWrapper {
             return;
         }
 
-        ServerInstance newServer =  ServerRepository.createServer(serverName, serverVersion);
+        ServerInstance newServer =  ServerRepository.getInstance().createServer(serverName, serverVersion);
         // Download the server in a background thread
         new Thread(() -> {
             try {

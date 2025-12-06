@@ -17,6 +17,7 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="com.nickawrist.minecraftdevserver.ServerRepository"/>
         <toolWindow factoryClass="com.nickawrist.minecraftdevserver.window.DevServerToolWindowFactory" id="DevServerToolWindow" anchor="right" icon="/icons/cube-svg.svg"/>
     </extensions>
 
