@@ -2,6 +2,7 @@ package com.nickawrist.minecraftdevserver.window.ServerInfoView;
 
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.JBColor;
+import com.nickawrist.minecraftdevserver.ServerRepository;
 import com.nickawrist.minecraftdevserver.models.ServerInstance;
 import org.jetbrains.annotations.NotNull;
 
@@ -107,6 +108,27 @@ public class ServerInfoViewFactory {
         infoPanel.add(openServerFolderButton);
         infoPanel.add(Box.createRigidArea(new Dimension(0, 4)));
         infoPanel.add(openPluginsFolderButton);
+
+        // Delete server button
+        JButton deleteServerButton = new JButton("Delete Server");
+        deleteServerButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        deleteServerButton.setBackground(new JBColor(new Color(0xF44336), new Color(0xF44336)));
+        deleteServerButton.setForeground(new JBColor(new Color(0xFFFFFF), new Color(0xFFFFFF)));
+        deleteServerButton.addActionListener(e -> {
+            int result = Messages.showYesNoDialog(
+                    "Are you sure you want to delete the server '" + server.getServerName() + "'?\nThis will also delete all server files.",
+                    "Delete Server",
+                    Messages.getWarningIcon()
+            );
+            if (result == Messages.YES) {
+                if (server.isServerRunning()) {
+                    server.stopServer();
+                }
+                ServerRepository.getInstance().removeServer(server.getUuid());
+            }
+        });
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 8)));
+        infoPanel.add(deleteServerButton);
 
         JComponent consoleComponent = server.getServerConsoleComponent();
         if (consoleComponent != null) {

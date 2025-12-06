@@ -1,19 +1,24 @@
 package com.nickawrist.minecraftdevserver;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.diagnostic.Logger;
+import com.nickawrist.minecraftdevserver.constants.PluginConstants;
 import com.nickawrist.minecraftdevserver.models.ServerInstance;
 import com.nickawrist.minecraftdevserver.models.ServerState;
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @State(
         name = "MinecraftDevServerRepository",
@@ -24,6 +29,25 @@ public final class ServerRepository implements PersistentStateComponent<ServerRe
     private static final Logger LOG = Logger.getInstance(ServerRepository.class);
 
     private final Map<UUID, ServerInstance> repo = new HashMap<>();
+    private final List<RepositoryChangeListener> changeListeners = new CopyOnWriteArrayList<>();
+
+    public interface RepositoryChangeListener {
+        void onRepositoryChanged();
+    }
+
+    public void addChangeListener(RepositoryChangeListener listener) {
+        changeListeners.add(listener);
+    }
+
+    public void removeChangeListener(RepositoryChangeListener listener) {
+        changeListeners.remove(listener);
+    }
+
+    private void notifyRepositoryChanged() {
+        for (RepositoryChangeListener listener : changeListeners) {
+            listener.onRepositoryChanged();
+        }
+    }
 
     public static ServerRepository getInstance() {
         return ApplicationManager.getApplication().getService(ServerRepository.class);
@@ -92,11 +116,40 @@ public final class ServerRepository implements PersistentStateComponent<ServerRe
     public ServerInstance createServer(String serverName, String serverVersion) {
         ServerInstance serverInstance = new ServerInstance(serverName, serverVersion);
         repo.put(serverInstance.getUuid(), serverInstance);
+        notifyRepositoryChanged();
         return serverInstance;
     }
 
     public List<ServerInstance> getServers() {
         return repo.values().stream().toList();
+    }
+
+    public void removeServer(UUID uuid) {
+        ServerInstance server = repo.get(uuid);
+        if (server != null) {
+            // Try to get the directory from the server runner first
+            Path serverDir = server.getServerDirPath();
+
+            // If no server runner, calculate the directory path based on server name
+            if (serverDir == null) {
+                String destination = PathManager.getSystemPath();
+                Path destinationPath = Paths.get(destination, PluginConstants.PLUGIN_ID);
+                serverDir = destinationPath.resolve(server.getServerName());
+            }
+
+            // Delete the server directory if it exists
+            if (serverDir != null && Files.exists(serverDir)) {
+                try {
+                    FileUtils.deleteDirectory(serverDir.toFile());
+                    LOG.info("Deleted server directory: " + serverDir);
+                } catch (IOException e) {
+                    LOG.error("Failed to delete server directory: " + serverDir, e);
+                }
+            }
+        }
+
+        repo.remove(uuid);
+        notifyRepositoryChanged();
     }
 
 }

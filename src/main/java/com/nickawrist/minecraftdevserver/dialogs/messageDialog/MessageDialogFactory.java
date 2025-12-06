@@ -1,4 +1,4 @@
-package com.nickawrist.minecraftdevserver.dialogs.sucessDialog;
+package com.nickawrist.minecraftdevserver.dialogs.messageDialog;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;

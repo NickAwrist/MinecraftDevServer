@@ -1,6 +1,7 @@
 package com.nickawrist.minecraftdevserver.window;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.components.JBScrollPane;
@@ -29,6 +30,7 @@ public class DevServerToolWindowFactory implements ToolWindowFactory {
     private JButton createServerButton;
     private Timer runnerReadyTimer;
     private final ServerInfoViewFactory serverInfoViewFactory = new ServerInfoViewFactory();
+    private ServerRepository.RepositoryChangeListener repositoryChangeListener;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -49,6 +51,10 @@ public class DevServerToolWindowFactory implements ToolWindowFactory {
         // Create Server button at bottom
         createServerButton = getOpenCreationDialogButton(project);
         mainPanel.add(createServerButton, BorderLayout.SOUTH);
+
+        // Subscribe to repository changes to auto-refresh
+        repositoryChangeListener = () -> SwingUtilities.invokeLater(this::showServerListView);
+        ServerRepository.getInstance().addChangeListener(repositoryChangeListener);
 
         // Initialize with server list view
         showServerListView();
@@ -102,6 +108,25 @@ public class DevServerToolWindowFactory implements ToolWindowFactory {
                 serverButton.setBorderPainted(true);
                 serverButton.setContentAreaFilled(true);
                 serverButton.addActionListener(e -> showServerInfoView(server));
+
+                // Add right-click context menu for deleting servers
+                JPopupMenu contextMenu = new JPopupMenu();
+                JMenuItem deleteItem = new JMenuItem("Delete Server");
+                deleteItem.addActionListener(e -> {
+                    int result = Messages.showYesNoDialog(
+                            "Are you sure you want to delete the server '" + server.getServerName() + "'?\nThis will also delete all server files.",
+                            "Delete Server",
+                            Messages.getWarningIcon()
+                    );
+                    if (result == Messages.YES) {
+                        if (server.hasServerRunner() && server.isServerRunning()) {
+                            server.stopServer();
+                        }
+                        ServerRepository.getInstance().removeServer(server.getUuid());
+                    }
+                });
+                contextMenu.add(deleteItem);
+                serverButton.setComponentPopupMenu(contextMenu);
 
                 JPanel rowPanel = new JPanel(new GridBagLayout());
                 rowPanel.setOpaque(false);

@@ -2,6 +2,8 @@ package com.nickawrist.minecraftdevserver.models;
 
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
 import com.intellij.ui.JBColor;
 import com.nickawrist.minecraftdevserver.constants.PluginConstants;
 
@@ -16,8 +18,15 @@ public class ServerConsole {
     private Consumer<String> commandHandler;
 
     public ServerConsole() {
-        consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(PluginConstants.project).getConsole();
-        initializeUI();
+        if (SwingUtilities.isEventDispatchThread()) {
+            consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(PluginConstants.project).getConsole();
+            initializeUI();
+        } else {
+            ApplicationManager.getApplication().invokeAndWait(() -> {
+                consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(PluginConstants.project).getConsole();
+                initializeUI();
+            }, ModalityState.defaultModalityState());
+        }
     }
 
     private void initializeUI() {

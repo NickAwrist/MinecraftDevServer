@@ -11,6 +11,7 @@ import com.nickawrist.minecraftdevserver.backend.models.PaperBuild;
 import com.nickawrist.minecraftdevserver.backend.models.ServerPropertyChanges;
 import com.nickawrist.minecraftdevserver.backend.utils.JarInstaller;
 import com.nickawrist.minecraftdevserver.backend.utils.ServerConfigurator;
+import com.nickawrist.minecraftdevserver.dialogs.messageDialog.MessageDialogFactory;
 import com.nickawrist.minecraftdevserver.models.ServerInstance;
 import org.jetbrains.annotations.Nullable;
 
@@ -177,6 +178,16 @@ public class DevServerFormDialogue extends DialogWrapper {
 
             } catch (Exception e) {
                 LOG.error("Failed to download Paper server", e);
+                // Remove the server from the repository since creation failed
+                ServerRepository.getInstance().removeServer(newServer.getUuid());
+                // Show error dialog on EDT
+                SwingUtilities.invokeLater(() -> {
+                    MessageDialogFactory errorDialog = new MessageDialogFactory(
+                            null,
+                            "Failed to create server: " + e.getMessage()
+                    );
+                    errorDialog.show();
+                });
             }
         }).start();
 
