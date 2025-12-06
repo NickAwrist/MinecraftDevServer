@@ -74,6 +74,22 @@ public class ServerRunner {
         }
     }
 
+    public void sendCommand(String command) {
+        if (!isRunning()) {
+            LOG.warn("Cannot send command, server is not running.");
+            return;
+        }
+
+        try {
+            String cmd = command.endsWith("\n") ? command : command + "\n";
+            processHandler.getProcessInput().write(cmd.getBytes(StandardCharsets.UTF_8));
+            processHandler.getProcessInput().flush();
+            LOG.info("Sent command: " + command);
+        } catch (Exception e) {
+            LOG.error("Failed to send command to server.", e);
+        }
+    }
+
 
     public boolean isRunning(){
         return processHandler != null && !processHandler.isProcessTerminated();

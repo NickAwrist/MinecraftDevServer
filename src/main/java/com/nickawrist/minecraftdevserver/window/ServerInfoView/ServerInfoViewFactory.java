@@ -3,6 +3,7 @@ package com.nickawrist.minecraftdevserver.window.ServerInfoView;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.JBColor;
 import com.nickawrist.minecraftdevserver.models.ServerInstance;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,20 +50,12 @@ public class ServerInfoViewFactory {
         controlButton.setOpaque(true);
         controlButton.setForeground(new JBColor(new Color(0xFFFFFF), new Color(0xFFFFFF)));
 
-        Runnable refreshStatus = () -> {
-            boolean running = server.isServerRunning();
-            statusLabel.setText("Status: " + (running ? "Running" : "Stopped"));
-            if (running) {
-                controlButton.setText("Stop Server");
-                controlButton.setBackground(new JBColor(new Color(0xF44336), new Color(0xF44336)));
-            } else {
-                controlButton.setText("Start Server");
-                controlButton.setBackground(new JBColor(new Color(0x4CAF50), new Color(0x4CAF50)));
-            }
-            controlButton.setEnabled(true);
-        };
+        Runnable refreshStatus = getRunnable(server, statusLabel, controlButton);
 
-        refreshStatus.run();
+        // Register listener to update UI when server state changes (e.g., via command)
+        server.addServerStateListener(isRunning -> {
+            SwingUtilities.invokeLater(refreshStatus);
+        });
 
         controlButton.addActionListener(e -> {
             controlButton.setEnabled(false);
@@ -125,6 +118,24 @@ public class ServerInfoViewFactory {
         return infoPanel;
     }
 
+    private @NotNull Runnable getRunnable(ServerInstance server, JLabel statusLabel, JButton controlButton) {
+        Runnable refreshStatus = () -> {
+            boolean running = server.isServerRunning();
+            statusLabel.setText("Status: " + (running ? "Running" : "Stopped"));
+            if (running) {
+                controlButton.setText("Stop Server");
+                controlButton.setBackground(new JBColor(new Color(0xF44336), new Color(0xF44336)));
+            } else {
+                controlButton.setText("Start Server");
+                controlButton.setBackground(new JBColor(new Color(0x4CAF50), new Color(0x4CAF50)));
+            }
+            controlButton.setEnabled(true);
+        };
+
+        refreshStatus.run();
+        return refreshStatus;
+    }
+
     private static void openServerFolder(ServerInstance server) {
         Path serverDir = server.getServerDirPath();
         if (serverDir == null) {
@@ -170,6 +181,7 @@ public class ServerInfoViewFactory {
             }
             try {
                 Thread.sleep(SERVER_STATE_POLL_INTERVAL_MS);
+
             } catch (InterruptedException interruptedException) {
                 Thread.currentThread().interrupt();
                 return;
