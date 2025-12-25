@@ -22,15 +22,19 @@ public class ServerState {
     @Attribute("jarPath")
     public String jarPath;
 
+    @Attribute("allocatedMemoryMB")
+    public int allocatedMemoryMB = 1024;
+
     // Required for XML serialization
     public ServerState() {
     }
 
-    public ServerState(String uuid, String serverName, String serverVersion, String jarPath) {
+    public ServerState(String uuid, String serverName, String serverVersion, String jarPath, int allocatedMemoryMB) {
         this.uuid = uuid;
         this.serverName = serverName;
         this.serverVersion = serverVersion;
         this.jarPath = jarPath;
+        this.allocatedMemoryMB = allocatedMemoryMB;
     }
 }
 

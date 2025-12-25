@@ -13,6 +13,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Component;
@@ -48,6 +50,33 @@ public class ServerInfoViewFactory {
         infoPanel.add(versionLabel);
         infoPanel.add(Box.createRigidArea(new Dimension(0, 8)));
         infoPanel.add(uuidLabel);
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 12)));
+
+        JPanel ramPanel = new JPanel();
+        ramPanel.setLayout(new BoxLayout(ramPanel, BoxLayout.X_AXIS));
+        ramPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        ramPanel.setOpaque(false);
+
+        JLabel ramLabel = new JLabel("Allocated RAM (MB): ");
+        ramLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JSpinner ramSpinner = new JSpinner(new SpinnerNumberModel(server.getAllocatedMemoryMB(), 128, 131072, 256));
+        ramSpinner.setMaximumSize(new Dimension(120, 30));
+        ramSpinner.setPreferredSize(new Dimension(120, 30));
+        JSpinner.NumberEditor editor = new JSpinner.NumberEditor(ramSpinner, "#");
+        ramSpinner.setEditor(editor);
+
+        // Add listener to update server allocated memory when spinner value changes
+        ramSpinner.addChangeListener(e -> {
+            int allocatedMemory = (Integer) ramSpinner.getValue();
+            server.setAllocatedMemoryMB(allocatedMemory);
+        });
+
+        ramPanel.add(ramLabel);
+        ramPanel.add(ramSpinner);
+        ramPanel.add(Box.createHorizontalGlue());
+
+        infoPanel.add(ramPanel);
         infoPanel.add(Box.createRigidArea(new Dimension(0, 12)));
 
         JLabel statusLabel = new JLabel();

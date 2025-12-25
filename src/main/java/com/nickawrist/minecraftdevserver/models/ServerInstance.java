@@ -16,6 +16,7 @@ public class ServerInstance {
     private String serverName;
     private final String serverVersion;
     private Path jarPath;
+    private int allocatedMemoryMB;
 
     private ServerRunner serverRunner;
 
@@ -23,17 +24,20 @@ public class ServerInstance {
 
     private final List<ServerStateListener> stateListeners = new CopyOnWriteArrayList<>();
 
-    public ServerInstance(String serverName, String serverVersion) {
+    public ServerInstance(String serverName, String serverVersion, int allocatedMemoryMB) {
         this.uuid = UUID.randomUUID();
         this.serverName = serverName;
         this.serverVersion = serverVersion;
+        this.allocatedMemoryMB = allocatedMemoryMB;
     }
 
-    public ServerInstance(UUID uuid, String serverName, String serverVersion, Path jarPath) {
+    public ServerInstance(UUID uuid, String serverName, String serverVersion, Path jarPath, int allocatedMemoryMB) {
         this.uuid = uuid;
         this.serverName = serverName;
         this.serverVersion = serverVersion;
         this.jarPath = jarPath;
+        this.allocatedMemoryMB = allocatedMemoryMB;
+        createServerRunner(jarPath);
     }
 
     public String getServerName() {
@@ -45,6 +49,9 @@ public class ServerInstance {
     public UUID getUuid() {
         return uuid;
     }
+    public int getAllocatedMemoryMB() {
+        return allocatedMemoryMB;
+    }
     public JComponent getServerConsoleComponent() {
         if (serverConsole == null) { return null;}
         return serverConsole.getComponent();
@@ -53,10 +60,17 @@ public class ServerInstance {
         if (serverRunner == null) { return null;}
         return serverRunner.getServerDir();
     }
-    
+
+    public void setAllocatedMemoryMB(int allocatedMemoryMB) {
+        this.allocatedMemoryMB = allocatedMemoryMB;
+        if(hasServerRunner()) {
+            serverRunner.setAllocatedMemoryMB(allocatedMemoryMB);
+        }
+    }
+
     public void createServerRunner(Path jarDir) {
         this.jarPath = jarDir;
-        this.serverRunner = new ServerRunner(jarDir.getParent(), jarDir);
+        this.serverRunner = new ServerRunner(jarDir.getParent(), jarDir, allocatedMemoryMB);
         this.serverConsole = new ServerConsole();
         this.serverConsole.setCommandHandler(this::sendCommand);
     }

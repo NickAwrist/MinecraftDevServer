@@ -68,7 +68,8 @@ public final class ServerRepository implements PersistentStateComponent<ServerRe
                     server.getUuid().toString(),
                     server.getServerName(),
                     server.getServerVersion(),
-                    jarPathStr
+                    jarPathStr,
+                    server.getAllocatedMemoryMB()
             ));
         }
         return state;
@@ -92,13 +93,9 @@ public final class ServerRepository implements PersistentStateComponent<ServerRe
                         uuid,
                         serverState.serverName,
                         serverState.serverVersion,
-                        jarPath
+                        jarPath,
+                        serverState.allocatedMemoryMB
                 );
-
-                // Re-create the server runner if jar path exists
-                if (jarPath != null) {
-                    server.createServerRunner(jarPath);
-                }
 
                 repo.put(uuid, server);
                 LOG.info("Loaded server: " + serverState.serverName);
@@ -109,7 +106,7 @@ public final class ServerRepository implements PersistentStateComponent<ServerRe
     }
 
     public ServerInstance createServer(String serverName, String serverVersion) {
-        ServerInstance serverInstance = new ServerInstance(serverName, serverVersion);
+        ServerInstance serverInstance = new ServerInstance(serverName, serverVersion, 1024);
         repo.put(serverInstance.getUuid(), serverInstance);
         notifyRepositoryChanged();
         return serverInstance;

@@ -14,13 +14,18 @@ public class ServerRunner {
     private final Path serverDir;
     private final Path jarPath;
 
-    private int allocatedMemoryMB = 1024;
+    private int allocatedMemoryMB;
 
     private OSProcessHandler processHandler;
 
-    public ServerRunner(Path serverDir, Path jarPath) {
+    public ServerRunner(Path serverDir, Path jarPath, int allocatedMemoryMB) {
         this.serverDir = serverDir;
         this.jarPath = jarPath;
+        this.allocatedMemoryMB = allocatedMemoryMB;
+    }
+
+    public void setAllocatedMemoryMB(int allocatedMemoryMB) {
+        this.allocatedMemoryMB = allocatedMemoryMB;
     }
 
     public void startServer(ServerConsole serverConsole) {
