@@ -1,9 +1,15 @@
 package com.nickawrist.minecraftdevserver.models;
 
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
+import com.intellij.execution.impl.ConsoleViewImpl;
 import com.intellij.execution.ui.ConsoleView;
+import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.colors.EditorColorsScheme;
+import com.intellij.openapi.editor.ex.EditorEx;
+import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.ui.JBColor;
 import com.nickawrist.minecraftdevserver.constants.PluginConstants;
 
@@ -14,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.util.function.Consumer;
 
 public class ServerConsole {
@@ -40,6 +47,7 @@ public class ServerConsole {
         // Console component
         JComponent consoleComponent = consoleView.getComponent();
         consoleComponent.setBackground(JBColor.BLACK);
+        configureConsoleColors();
         mainPanel.add(consoleComponent, BorderLayout.CENTER);
 
         // Command input panel
@@ -80,5 +88,20 @@ public class ServerConsole {
 
     public ConsoleView getConsoleView() {
         return consoleView;
+    }
+
+    private void configureConsoleColors() {
+        if (!(consoleView instanceof ConsoleViewImpl)) return;
+
+        Editor editor = ((ConsoleViewImpl) consoleView).getEditor();
+        if (editor == null) return;
+        if (editor instanceof EditorEx) {
+            ((EditorEx) editor).setBackgroundColor(JBColor.BLACK);
+        }
+
+        EditorColorsScheme scheme = editor.getColorsScheme();
+        TextAttributes whiteText = new TextAttributes(JBColor.WHITE, null, null, null, Font.PLAIN);
+        scheme.setAttributes(ConsoleViewContentType.NORMAL_OUTPUT_KEY, whiteText);
+        scheme.setAttributes(ConsoleViewContentType.SYSTEM_OUTPUT_KEY, whiteText);
     }
 }

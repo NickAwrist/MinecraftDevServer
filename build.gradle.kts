@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.nickawrist"
-version = "1.0.1"
+version = "1.0.2"
 
 repositories {
     mavenCentral()
@@ -36,7 +36,8 @@ intellijPlatform {
         }
 
         changeNotes = """
-      Initial version
+      - Replaced OSProcessHandler to ColoredProcessHandler
+      - Added some error ballon when server console does not start properly
     """.trimIndent()
     }
 }

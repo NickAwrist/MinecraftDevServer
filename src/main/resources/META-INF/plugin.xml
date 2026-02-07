@@ -19,6 +19,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.nickawrist.minecraftdevserver.ServerRepository"/>
         <toolWindow factoryClass="com.nickawrist.minecraftdevserver.window.DevServerToolWindowFactory" id="DevServerToolWindow" anchor="right" icon="/icons/cube-svg.svg"/>
+        <notificationGroup id="MinecraftDevServer.Console" displayType="BALLOON"/>
     </extensions>
 
     <actions>
