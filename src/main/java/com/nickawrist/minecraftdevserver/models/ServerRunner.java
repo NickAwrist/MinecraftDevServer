@@ -13,6 +13,7 @@ import com.intellij.openapi.util.Key;
 import com.nickawrist.minecraftdevserver.constants.PluginConstants;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -49,7 +50,7 @@ public class ServerRunner {
 
         GeneralCommandLine commandLine = new GeneralCommandLine()
                 .withWorkDirectory(serverDir.toFile())
-                .withExePath("java")
+                .withExePath(resolveJavaExecutable())
                 .withParameters(String.format("-Xmx%dm", allocatedMemoryMB))
                 .withParameters(String.format("-Xms%dm", allocatedMemoryMB))
                 .withParameters("-jar")
@@ -66,6 +67,18 @@ public class ServerRunner {
         } catch (Exception e) {
             LOG.error("Failed to start server.", e);
         }
+    }
+
+    private String resolveJavaExecutable() {
+        try {
+            if (new ProcessBuilder("java", "-version").redirectErrorStream(true).start().waitFor() == 0) {
+                return "java";
+            }
+        } catch (Exception ignored) {}
+
+        String javaHome = System.getProperty("java.home");
+        return javaHome + File.separator + "bin" + File.separator + "java" +
+                (System.getProperty("os.name").toLowerCase().contains("win") ? ".exe" : "");
     }
 
     private ProcessHandler createProcessHandler(GeneralCommandLine commandLine) throws Exception {
