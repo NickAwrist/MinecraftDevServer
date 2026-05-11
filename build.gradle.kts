@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "2.1.0"
@@ -5,7 +7,7 @@ plugins {
 }
 
 group = "com.nickawrist"
-version = "1.0.2"
+version = "1.0.3"
 
 repositories {
     mavenCentral()
@@ -36,9 +38,14 @@ intellijPlatform {
         }
 
         changeNotes = """
-      - Replaced OSProcessHandler to ColoredProcessHandler
-      - Added some error ballon when server console does not start properly
+      - 
     """.trimIndent()
+    }
+
+    pluginVerification {
+        ides {
+            ide("IC", "2025.1")
+        }
     }
 }
 
@@ -49,6 +56,8 @@ tasks {
         targetCompatibility = "21"
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "21"
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+        }
     }
 }

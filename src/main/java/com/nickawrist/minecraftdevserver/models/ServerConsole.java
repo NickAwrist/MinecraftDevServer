@@ -11,6 +11,7 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.ui.JBColor;
+import com.intellij.util.ui.UIUtil;
 import com.nickawrist.minecraftdevserver.constants.PluginConstants;
 
 import javax.swing.BorderFactory;
@@ -20,10 +21,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.util.function.Consumer;
 
 public class ServerConsole {
+    private static final Color TERMINAL_BACKGROUND = Color.BLACK;
+    private static final Color TERMINAL_FOREGROUND = new Color(0xE8E8E8);
+
     private ConsoleView consoleView;
     private JPanel mainPanel;
     private JTextField commandInput;
@@ -43,11 +48,11 @@ public class ServerConsole {
 
     private void initializeUI() {
         mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setOpaque(false);
 
-        // Console component
         JComponent consoleComponent = consoleView.getComponent();
-        consoleComponent.setBackground(JBColor.BLACK);
         configureConsoleColors();
+        consoleView.print("Console ready. Start the server to see output.\n", ConsoleViewContentType.SYSTEM_OUTPUT);
         mainPanel.add(consoleComponent, BorderLayout.CENTER);
 
         // Command input panel
@@ -95,13 +100,19 @@ public class ServerConsole {
 
         Editor editor = ((ConsoleViewImpl) consoleView).getEditor();
         if (editor == null) return;
-        if (editor instanceof EditorEx) {
-            ((EditorEx) editor).setBackgroundColor(JBColor.BLACK);
-        }
 
         EditorColorsScheme scheme = editor.getColorsScheme();
-        TextAttributes whiteText = new TextAttributes(JBColor.WHITE, null, null, null, Font.PLAIN);
-        scheme.setAttributes(ConsoleViewContentType.NORMAL_OUTPUT_KEY, whiteText);
-        scheme.setAttributes(ConsoleViewContentType.SYSTEM_OUTPUT_KEY, whiteText);
+        if (editor instanceof EditorEx) {
+            ((EditorEx) editor).setBackgroundColor(TERMINAL_BACKGROUND);
+        }
+
+        JComponent consoleComponent = consoleView.getComponent();
+        consoleComponent.setOpaque(true);
+        consoleComponent.setBackground(TERMINAL_BACKGROUND);
+        UIUtil.setBackgroundRecursively(consoleComponent, TERMINAL_BACKGROUND);
+
+        TextAttributes normalText = new TextAttributes(TERMINAL_FOREGROUND, null, null, null, Font.PLAIN);
+        scheme.setAttributes(ConsoleViewContentType.NORMAL_OUTPUT_KEY, normalText);
+        scheme.setAttributes(ConsoleViewContentType.SYSTEM_OUTPUT_KEY, normalText);
     }
 }
