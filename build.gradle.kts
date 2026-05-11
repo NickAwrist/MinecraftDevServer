@@ -38,7 +38,7 @@ intellijPlatform {
         }
 
         changeNotes = """
-      - 
+      - Fix console rendering and plugin deprecation warnings
     """.trimIndent()
     }
 
