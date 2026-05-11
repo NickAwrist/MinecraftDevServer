@@ -13,6 +13,7 @@ import com.intellij.openapi.util.Key;
 import com.nickawrist.minecraftdevserver.constants.PluginConstants;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -123,8 +124,15 @@ public class ServerRunner {
         }
 
         try {
-            processHandler.getProcessInput().write("stop\n".getBytes(StandardCharsets.UTF_8));
-            processHandler.getProcessInput().flush();
+            OutputStream processInput = processHandler.getProcessInput();
+            if (processInput == null) {
+                LOG.warn("Server process input is unavailable, forcing kill.");
+                processHandler.destroyProcess();
+                return;
+            }
+
+            processInput.write("stop\n".getBytes(StandardCharsets.UTF_8));
+            processInput.flush();
 
         } catch (Exception e) {
             LOG.warn("Failed to send stop command, forcing kill.", e);
@@ -140,8 +148,14 @@ public class ServerRunner {
 
         try {
             String cmd = command.endsWith("\n") ? command : command + "\n";
-            processHandler.getProcessInput().write(cmd.getBytes(StandardCharsets.UTF_8));
-            processHandler.getProcessInput().flush();
+            OutputStream processInput = processHandler.getProcessInput();
+            if (processInput == null) {
+                LOG.warn("Cannot send command, server process input is unavailable.");
+                return;
+            }
+
+            processInput.write(cmd.getBytes(StandardCharsets.UTF_8));
+            processInput.flush();
             LOG.info("Sent command: " + command);
         } catch (Exception e) {
             LOG.error("Failed to send command to server.", e);

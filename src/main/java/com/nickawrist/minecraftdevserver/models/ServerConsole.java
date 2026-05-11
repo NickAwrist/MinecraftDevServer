@@ -21,13 +21,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.util.function.Consumer;
 
 public class ServerConsole {
-    private static final Color TERMINAL_BACKGROUND = Color.BLACK;
-    private static final Color TERMINAL_FOREGROUND = new Color(0xE8E8E8);
+    private static final JBColor TERMINAL_BACKGROUND = new JBColor(0x000000, 0x000000);
+    private static final JBColor TERMINAL_FOREGROUND = new JBColor(0xE8E8E8, 0xE8E8E8);
 
     private ConsoleView consoleView;
     private JPanel mainPanel;
