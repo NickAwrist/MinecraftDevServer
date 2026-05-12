@@ -40,12 +40,12 @@ public class JarInstaller {
         return newDirectory;
     }
 
-    public static Path downloadPaperServer(String serverName, PaperBuild build, String version) {
-        String downloadURL = PaperApi.getDownloadUrl(build, version);
+    public static Path downloadPaperServer(String serverName, PaperBuild build) {
+        String downloadURL = PaperApi.getDownloadUrl(build);
 
         Path targetDirectory = getOrCreateServerDirectory(serverName);
 
-        String filename = build.downloads().application().name();
+        String filename = build.downloads().serverDefault().name();
         filename = filename.replace(".", "-");
         filename = filename.replace("-jar", ".jar");
 

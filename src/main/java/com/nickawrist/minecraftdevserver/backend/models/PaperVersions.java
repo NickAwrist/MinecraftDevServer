@@ -1,4 +1,9 @@
 package com.nickawrist.minecraftdevserver.backend.models;
 
-public record PaperVersions(String project_id, String project_name, String[] version_groups, String[] versions) {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.Map;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record PaperVersions(Map<String, String[]> versions) {
 }

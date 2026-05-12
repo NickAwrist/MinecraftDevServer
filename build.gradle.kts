@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.nickawrist"
-version = "1.0.3"
+version = "1.0.4"
 
 repositories {
     mavenCentral()
@@ -38,7 +38,7 @@ intellijPlatform {
         }
 
         changeNotes = """
-      - Fix console rendering and plugin deprecation warnings
+      - Updated primary api endpoint to fill.papermc.io
     """.trimIndent()
     }
 

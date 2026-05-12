@@ -9,6 +9,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 
 public class PaperVersionLabeledComponentFactory {
@@ -55,8 +58,10 @@ public class PaperVersionLabeledComponentFactory {
                 PaperVersions paperVersions = PaperApi.getPaperVersions(showPrereleasesCheckBox.isSelected());
                 if(paperVersions == null) { return; }
 
-                String[] versions = paperVersions.versions();
                 versionComboBox.removeAllItems();
+                Map<String, String[]> versionsMap = paperVersions.versions();
+                List<String> versionsList = versionsMap.values().stream().flatMap(Arrays::stream).toList().reversed();
+                String[] versions = versionsList.toArray(String[]::new);
                 for (int i = versions.length - 1; i >= 0; i--) {
                     versionComboBox.addItem(versions[i]);
                 }
@@ -67,5 +72,4 @@ public class PaperVersionLabeledComponentFactory {
             }
         });
     }
-
 }

@@ -171,7 +171,7 @@ public class DevServerFormDialogue extends DialogWrapper {
         // Download the server in a background thread
         new Thread(() -> {
             try {
-                Path downloadLocation = JarInstaller.downloadPaperServer(serverName, selectedBuild, selectedVersion);
+                Path downloadLocation = JarInstaller.downloadPaperServer(serverName, selectedBuild);
 
                 ServerPropertyChanges propertyChanges = new ServerPropertyChanges(
                         serverName,

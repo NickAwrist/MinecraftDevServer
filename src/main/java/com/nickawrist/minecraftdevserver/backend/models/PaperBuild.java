@@ -1,7 +1,22 @@
 package com.nickawrist.minecraftdevserver.backend.models;
 
-public record PaperBuild(int build, String time, String channel, boolean promoted, Changes[] changes, Downloads downloads ) {
-	public record Changes(String commit, String summary, String message ){}
-	public record Downloads(Application application){}
-	public record Application(String name, String sha256){}
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record PaperBuild(
+				@JsonProperty("id") int build,
+				String time,
+				Downloads downloads
+) {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public record Downloads(
+					@JsonProperty("server:default") DownloadInfo serverDefault
+	) {}
+
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public record DownloadInfo(
+					String name,
+					String url
+	) {}
 }
